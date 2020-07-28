@@ -1,6 +1,8 @@
 import 'package:Todo/components/Todo.dart';
 import 'package:flutter/material.dart';
 import './components/Todo.dart';
+import './components/NewTodo.dart';
+
 
 void main() {
   runApp(RootApp());
@@ -32,7 +34,32 @@ class _MainState extends State<MainApp> {
       ),
       body: Todo(),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () {
+          showModalBottomSheet<void>(
+            context: context,
+            builder: (BuildContext context) {
+              return Container(
+                height: 600,
+              
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      // const Text('Modal BottomSheet'),
+                      // RaisedButton(
+                      //   child: const Text('Close BottomSheet'),
+                      //   onPressed: () => Navigator.pop(context),
+                      // )
+                      NewTodo()
+
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+        },
         child: Icon(Icons.add),
       ),
     );

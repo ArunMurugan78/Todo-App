@@ -9,8 +9,6 @@ class Todo extends StatefulWidget {
 }
 
 class _TodoState extends State<Todo> {
-  Offset offset = Offset(0, 0);
-
   List<TodoModel> todos = [
     TodoModel(title: "CODE", type: Type.NOT_IMPORTANT),
     TodoModel(title: "SLEEP", type: Type.NOT_IMPORTANT),
@@ -27,6 +25,18 @@ class _TodoState extends State<Todo> {
     TodoModel(title: "CODE", type: Type.NOT_IMPORTANT),
   ];
 
+  handleDone(TodoModel e) {
+    setState(() {
+      List<TodoModel> temp = [];
+      for (int i = 0; i < todos.length; i++) {
+        if (e != todos[i]) {
+          temp.add(todos[i]);
+        }
+      }
+      todos = temp;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -35,35 +45,31 @@ class _TodoState extends State<Todo> {
           ...this
               .todos
               .map((e) => Container(
-                  child: GestureDetector(
-                    onHorizontalDragUpdate: (details) {
-                      print(this.offset);
-                      setState(() {
-                        offset = details.localPosition;
-                      });
-                    },
-                    child: Card(
-                        child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Text(
-                            e.title,
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 20),
-                          ),
-                          Text(
-                            DateFormat.yMMMEd().format(e.date),
-                            style: TextStyle(fontWeight: FontWeight.w100),
-                          )
-                        ],
-                      ),
-                    )),
-                  ),
-                  width: double.infinity,
-                  padding: EdgeInsets.all(1)))
+                    child: GestureDetector(
+                      onDoubleTap: () => {handleDone(e)},
+                      child: Card(
+                          child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            Text(
+                              e.title,
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20),
+                            ),
+                            Text(
+                              DateFormat.yMMMEd().format(e.date),
+                              style: TextStyle(fontWeight: FontWeight.w100),
+                            )
+                          ],
+                        ),
+                      )),
+                    ),
+                    width: double.maxFinite,
+                    padding: EdgeInsets.all(1),
+                  ))
               .toList()
         ],
       ),
