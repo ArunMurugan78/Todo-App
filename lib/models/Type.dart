@@ -1,0 +1,6 @@
+enum Type {
+  DONE ,
+  PENDING,
+  URGENT,
+  NOT_IMPORTANT
+}
