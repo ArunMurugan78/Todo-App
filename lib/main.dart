@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import './components/Todo.dart';
 import './components/NewTodo.dart';
 
-
 void main() {
   runApp(RootApp());
 }
@@ -24,8 +23,6 @@ class MainApp extends StatefulWidget {
 }
 
 class _MainState extends State<MainApp> {
- 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -39,21 +36,17 @@ class _MainState extends State<MainApp> {
             context: context,
             builder: (BuildContext context) {
               return Container(
-                height: 600,
-              
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      // const Text('Modal BottomSheet'),
-                      // RaisedButton(
-                      //   child: const Text('Close BottomSheet'),
-                      //   onPressed: () => Navigator.pop(context),
-                      // )
-                      NewTodo()
+                color:Color.fromARGB(140, 0, 0, 0),
+                  child: Container(
 
-                    ],
+                  height: 600,
+                decoration: BoxDecoration(borderRadius: BorderRadius.only(topLeft: Radius.circular(10),topRight: Radius.circular(10)),color: Colors.white),
+                  child: NewTodo(
+                    handleSubmit: () {
+                      setState(() {
+
+                      });
+                    },
                   ),
                 ),
               );
