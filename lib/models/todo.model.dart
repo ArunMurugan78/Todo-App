@@ -5,8 +5,8 @@ class TodoModel {
   DateTime date;
   Type type;
 
-  TodoModel({this.title, this.type, this.date}){
-    if(this.date==null){
+  TodoModel({this.title, this.type, this.date}) {
+    if (this.date == null) {
       this.date = new DateTime.now();
     }
   }

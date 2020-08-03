@@ -34,10 +34,15 @@ class _MainState extends State<MainApp> {
   toJSONEncodable() {
     return this.todos.map((TodoModel e) {
       Map<String, dynamic> m = new Map();
+      if (e == null) {
+        return null;
+      }
       print(e.date);
       m['title'] = e.title;
       m['date'] = e.date.toString();
       m['type'] = e.type;
+
+      return m;
     }).toList();
   }
 
@@ -45,40 +50,69 @@ class _MainState extends State<MainApp> {
     storage.setItem('todos', toJSONEncodable());
   }
 
+  _clearStorage() async {
+    await storage.clear();
+
+    setState(() {
+      this.todos = [];
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (initialised == false) {
-      var todos = storage.getItem('todos');
-
-      print(todos);
-
-      if (todos != null) {
-        this.todos = todos.map((e) {
-          return new TodoModel(
-              title: e.title, date: new DateTime(e.date), type: e.type);
-        }).toList();
-      }
-
-      //initialised = true;
-    }
     return Scaffold(
       appBar: AppBar(
         title: Text('Todo'),
       ),
-      body: RenderTodos(
-          todos: todos,
-          handleDone: (TodoModel e) {
-            setState(() {
-              todos = todos.map((el) {
-                if (e == el) {
-                  return null;
-                } else {
-                  return el;
+      body: Container(
+        constraints: BoxConstraints.expand(),
+        child: FutureBuilder(
+            future: storage.ready,
+            builder: (BuildContext context, AsyncSnapshot snapshot) {
+              if (snapshot.data == null) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              } else {
+                if (initialised == false) {
+                 
+                  var todosRestored = storage.getItem('todos');
+               
+                  if (todosRestored != null) {
+                    print("USING SAVED DATA");
+
+                    // setState(() {
+                    this.todos = List<TodoModel>.from(
+                      (todosRestored as List).map((e) {
+                        print({"E", e});
+                        return new TodoModel(
+                          title: e['title'],
+                          date: DateTime.parse(e['date']),
+                        );
+                      }),
+                    );
+                    //});
+                  }
+
+                  initialised = true;
                 }
-              }).toList();
-            });
-            _saveToStorage();
-          }),
+
+                return RenderTodos(
+                    todos: this.todos,
+                    handleDone: (TodoModel e) {
+                      if (e != null) {
+                        print({"Removing", e.title});
+                        setState(() {
+                          this.todos.remove(e);
+                          _saveToStorage();
+                        });
+                      } else {
+                        print("Error!");
+                      }
+                    });
+              }
+            }),
+      ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           showModalBottomSheet<void>(
@@ -98,11 +132,11 @@ class _MainState extends State<MainApp> {
                       print({title});
                       if (title.trim() != "") {
                         var t = new TodoModel(title: title);
-                        print({t.title,t.date});
+                        print({t.title, t.date});
                         setState(() {
-                         todos.add(t);
+                          todos.add(t);
                         });
-                        //   // _saveToStorage();
+                        _saveToStorage();
                         Navigator.pop(context);
                       }
                     },

@@ -1,17 +1,20 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import '../models/todo.model.dart';
 
 import 'package:intl/intl.dart';
 
 class RenderTodos extends StatefulWidget {
-RenderTodos({this.todos, this.handleDone});
+  RenderTodos({this.todos, this.handleDone});
 
- final List<TodoModel> todos;
+  final List<TodoModel> todos;
 
- final Function handleDone;
+  final Function handleDone;
 
   @override
-  _RenderTodosState createState() => _RenderTodosState(handleDone: this.handleDone);
+  _RenderTodosState createState() =>
+      _RenderTodosState(handleDone: this.handleDone);
 }
 
 class _RenderTodosState extends State<RenderTodos> {
@@ -19,15 +22,16 @@ class _RenderTodosState extends State<RenderTodos> {
 
   TodoModel done;
 
-  Function handleDone = () {};
+  final Function handleDone;
 
   _RenderTodosState({this.handleDone});
 
   handledonelocal(TodoModel e) {
     setState(() {
       done = e;
+
+      Timer(Duration(seconds: 1), () => this.handleDone(e));
     });
-    this.handleDone(e);
   }
 
   @override
@@ -40,8 +44,7 @@ class _RenderTodosState extends State<RenderTodos> {
               .todos
               .map((TodoModel e) => AnimatedContainer(
                     height: e == done ? 0 : _height,
-                    
-                    duration: Duration(milliseconds: 300),
+                    duration: Duration(milliseconds: 250),
                     child: done == e
                         ? Container(
                             child: Card(
@@ -53,7 +56,7 @@ class _RenderTodosState extends State<RenderTodos> {
                           )
                         : Container(
                             child: GestureDetector(
-                              onDoubleTap: () => {handleDone(e)},
+                              onDoubleTap: () => {handledonelocal(e)},
                               child: Card(
                                   child: Padding(
                                 padding: const EdgeInsets.all(8.0),
@@ -67,8 +70,8 @@ class _RenderTodosState extends State<RenderTodos> {
                                           fontWeight: FontWeight.bold,
                                           fontSize: 20),
                                     ),
-                                  Text(
-                                    DateFormat.yMMMEd().format(e.date),
+                                    Text(
+                                      DateFormat.yMMMEd().format(e.date),
                                       style: TextStyle(
                                           fontWeight: FontWeight.w100),
                                     )
